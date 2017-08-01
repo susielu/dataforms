@@ -1,10 +1,13 @@
 function toMapByDimension({ values, dim, getValue = d => d }) {
   const dimensions = {}
-  values.forEach(d => {
-    if (!dimensions[d[dim]]) {
-      dimensions[d[dim]] = []
+  const dimAccessor = !dim
+    ? d => d
+    : typeof dim === "function" ? dim : d => d[dim]
+  values.forEach((d, i) => {
+    if (!dimensions[dimAccessor(d)]) {
+      dimensions[dimAccessor(d)] = []
     }
-    dimensions[d[dim]].push(getValue(d))
+    dimensions[dimAccessor(d)].push(getValue(d))
   })
   return dimensions
 }

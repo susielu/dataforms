@@ -57,6 +57,10 @@ describe("toMapByDimension", () => {
     expect(transforms.toMapByDimension({ values, dim: "subregion" })).toEqual(
       transformed
     )
+
+    expect(
+      transforms.toMapByDimension({ values, dim: d => d.subregion })
+    ).toEqual(transformed)
   })
 })
 
