@@ -25,7 +25,7 @@ function toMappedLinesByDimension({ mapObject, stats }) {
     }
 
     if (stats) {
-      line.stats = stats.transform(line.coordinates)
+      line.stats = stats({ name: k, coordinates: line.coordinates })
     }
     return line
   })
