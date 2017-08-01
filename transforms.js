@@ -87,6 +87,7 @@ function zeroFillLine({
 
 module.exports = {
   toMapByDimension,
+  toMappedLinesByDimension,
   sortByTimestamp,
   zeroFillLine,
   timestampsFromData
