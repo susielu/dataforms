@@ -1,6 +1,6 @@
 {
   "name": "dataforms",
-  "version": "1.0.1-0",
+  "version": "1.0.1-1",
   "description": "",
   "directories": {
     "lib": "lib"
@@ -26,6 +26,8 @@
     "jest": "^20.0.4"
   },
   "babel": {
-    "presets": ["es2015"]
+    "presets": [
+      "es2015"
+    ]
   }
 }
