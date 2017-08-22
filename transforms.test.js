@@ -64,6 +64,84 @@ describe("toMapByDimension", () => {
   })
 })
 
+describe("toMapByDimensions", () => {
+  test("turns into nested dimensions", () => {
+    const values = [
+      {
+        signup_cnt: 901,
+        subregion: "Africa",
+        name: "one",
+        timestamp: "2017-04-24T00:00:00.000Z"
+      },
+      {
+        signup_cnt: 8790,
+        subregion: "Australia/NZ",
+        name: "one",
+        timestamp: "2017-04-24T00:00:00.000Z"
+      },
+      {
+        signup_cnt: 901,
+        subregion: "Africa",
+        name: "two",
+        timestamp: "2017-04-25T00:00:00.000Z"
+      },
+      {
+        signup_cnt: 8790,
+        subregion: "Australia/NZ",
+        name: "two",
+        timestamp: "2017-04-25T00:00:00.000Z"
+      }
+    ]
+
+    const transformed = {
+      Africa: {
+        one: [
+          {
+            name: "one",
+            signup_cnt: 901,
+            subregion: "Africa",
+            timestamp: "2017-04-24T00:00:00.000Z"
+          }
+        ],
+        two: [
+          {
+            name: "two",
+            signup_cnt: 901,
+            subregion: "Africa",
+            timestamp: "2017-04-25T00:00:00.000Z"
+          }
+        ]
+      },
+      "Australia/NZ": {
+        one: [
+          {
+            name: "one",
+            signup_cnt: 8790,
+            subregion: "Australia/NZ",
+            timestamp: "2017-04-24T00:00:00.000Z"
+          }
+        ],
+        two: [
+          {
+            name: "two",
+            signup_cnt: 8790,
+            subregion: "Australia/NZ",
+            timestamp: "2017-04-25T00:00:00.000Z"
+          }
+        ]
+      }
+    }
+
+    expect(
+      transforms.toMapByDimensions({
+        values,
+        dim: "subregion",
+        secondDim: "name"
+      })
+    ).toEqual(transformed)
+  })
+})
+
 describe("timestampsFromData", () => {
   test("array values", () => {
     expect(transforms.timestampsFromData({ values })).toEqual(values)

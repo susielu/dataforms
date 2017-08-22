@@ -4,10 +4,36 @@ function toMapByDimension({ values, dim, getValue = d => d }) {
     ? d => d
     : typeof dim === "function" ? dim : d => d[dim]
   values.forEach((d, i) => {
-    if (!dimensions[dimAccessor(d)]) {
-      dimensions[dimAccessor(d)] = []
+    const d1 = dimAccessor(d)
+    if (!dimensions[d1]) {
+      dimensions[d1] = []
     }
-    dimensions[dimAccessor(d)].push(getValue(d))
+    dimensions[d1].push(getValue(d))
+  })
+  return dimensions
+}
+
+function toMapByDimensions({ values, dim, secondDim, getValue = d => d }) {
+  const dimensions = {}
+  const dimAccessor = !dim
+    ? d => d
+    : typeof dim === "function" ? dim : d => d[dim]
+
+  const secondDimAccessor = !secondDim
+    ? d => d
+    : typeof secondDim === "function" ? secondDim : d => d[secondDim]
+
+  values.forEach((d, i) => {
+    const d1 = dimAccessor(d)
+    const d2 = secondDimAccessor(d)
+    if (!dimensions[d1]) {
+      dimensions[d1] = {}
+    }
+    if (!dimensions[d1][d2]) {
+      dimensions[d1][d2] = []
+    }
+
+    dimensions[d1][d2].push(getValue(d))
   })
   return dimensions
 }
@@ -16,7 +42,7 @@ function toMapByDimension({ values, dim, getValue = d => d }) {
 //7dma functionality
 
 //would also be nice to be able to add in stats on each point
-function toMappedLinesByDimension({ mapObject, stats }) {
+function toMappedLinesByDimension({ mapObject, stats, lineTransform }) {
   return Object.keys(mapObject).map(k => {
     const line = {
       name: k,
@@ -26,6 +52,14 @@ function toMappedLinesByDimension({ mapObject, stats }) {
 
     if (stats) {
       line.stats = stats({ name: k, coordinates: line.coordinates })
+    }
+
+    if (lineTransform) {
+      line.coordinates = lineTransform({
+        name: k,
+        stats: line.stats,
+        coordinates: line.coordinates
+      })
     }
     return line
   })
@@ -87,6 +121,7 @@ function zeroFillLine({
 
 module.exports = {
   toMapByDimension,
+  toMapByDimensions,
   toMappedLinesByDimension,
   sortByTimestamp,
   zeroFillLine,
