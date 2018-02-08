@@ -8,7 +8,7 @@ function toMapByDimension({ values, dim, getValue = d => d }) {
     if (!dimensions[d1]) {
       dimensions[d1] = []
     }
-    dimensions[d1].push(getValue(d))
+    dimensions[d1].push(getValue(d, i))
   })
   return dimensions
 }
@@ -33,7 +33,7 @@ function toMapByDimensions({ values, dim, secondDim, getValue = d => d }) {
       dimensions[d1][d2] = []
     }
 
-    dimensions[d1][d2].push(getValue(d))
+    dimensions[d1][d2].push(getValue(d, i))
   })
   return dimensions
 }
