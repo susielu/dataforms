@@ -2,7 +2,9 @@ function toMapByDimension({ values, dim, getValue = d => d }) {
   const dimensions = {}
   const dimAccessor = !dim
     ? d => d
-    : typeof dim === "function" ? dim : d => d[dim]
+    : typeof dim === "function"
+      ? dim
+      : d => d[dim]
   values.forEach((d, i) => {
     const d1 = dimAccessor(d)
     if (!dimensions[d1]) {
@@ -17,11 +19,15 @@ function toMapByDimensions({ values, dim, secondDim, getValue = d => d }) {
   const dimensions = {}
   const dimAccessor = !dim
     ? d => d
-    : typeof dim === "function" ? dim : d => d[dim]
+    : typeof dim === "function"
+      ? dim
+      : d => d[dim]
 
   const secondDimAccessor = !secondDim
     ? d => d
-    : typeof secondDim === "function" ? secondDim : d => d[secondDim]
+    : typeof secondDim === "function"
+      ? secondDim
+      : d => d[secondDim]
 
   values.forEach((d, i) => {
     const d1 = dimAccessor(d)
@@ -77,7 +83,9 @@ function timestampsFromData({ values, dim }) {
   const times = new Map()
   const dimAccessor = !dim
     ? d => d
-    : typeof dim === "function" ? dim : d => d[dim]
+    : typeof dim === "function"
+      ? dim
+      : d => d[dim]
 
   values.forEach(d => {
     times.set(dimAccessor(d), true)
@@ -96,7 +104,7 @@ function timestampsFromData({ values, dim }) {
 function zeroFillLine({
   values,
   timestamps,
-  metrics,
+  metrics = [],
   timeDim = "timestamp",
   zeroFill = 0
 }) {
@@ -105,10 +113,17 @@ function zeroFillLine({
   }
   timestamps.forEach((d, i) => {
     if (values.map(p => p[timeDim]).indexOf(d) === -1) {
-      const emptyFillObject = Object.assign({}, values[0])
-      Object.keys(emptyFillObject).forEach(p => {
-        if (metrics.indexOf(p) !== -1) {
-          emptyFillObject[p] = zeroFill
+      const emptyFillObject = {}
+      if (metrics.indexOf(p) !== -1) {
+        emptyFillObject[p] = zeroFill
+      }
+
+      metrics.forEach(m => {
+        if (typeof m === "string") {
+          emptyFillObject[m] = zeroFill
+        } else if (typeof m === "function") {
+          const { key, value } = m(d, i)
+          emptyFillObject[key] = value
         }
       })
       emptyFillObject[timeDim] = d
